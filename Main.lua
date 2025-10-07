@@ -1,319 +1,226 @@
--- PERFORMANCE HUB (BETA v2) by Gonzales Official
+-- Night Hub | Tiny Floating HUD with Key System
+-- By: Gonzales Official
 
-local KEY = "555"
-local DISCORD_LINK = "https://discord.gg/mnXcbBjNQ7"
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "NightHub"
 
-local function makeDraggable(frame)
-    local UIS = game:GetService("UserInputService")
-    local dragging, dragStart, startPos
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then dragging = false end
-            end)
-        end
-    end)
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            UIS.InputChanged:Connect(function(inp)
-                if dragging and inp == input then
-                    local delta = inp.Position - dragStart
-                    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-                end
-            end)
-        end
-    end)
-end
+--------------------------------------------------
+-- First UI: Key Input (Small, Centered)
+--------------------------------------------------
+local keyFrame = Instance.new("Frame", gui)
+keyFrame.Size = UDim2.new(0, 150, 0, 80)
+keyFrame.Position = UDim2.new(0.5, -75, 0.5, -40) -- center
+keyFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+keyFrame.Active = true
+keyFrame.Draggable = true
+local keyCorner = Instance.new("UICorner", keyFrame)
+local keyStroke = Instance.new("UIStroke", keyFrame)
+keyStroke.Thickness = 2
 
-if game.CoreGui:FindFirstChild("PerformanceHub") then
-    game.CoreGui.PerformanceHub:Destroy()
-end
-
-local sg = Instance.new("ScreenGui")
-sg.Name = "PerformanceHub"
-sg.ResetOnSpawn = false
-sg.Parent = syn and syn.protect_gui and syn.protect_gui(game.CoreGui) or game.CoreGui
-
--- Main Frame
-local hub = Instance.new("Frame")
-hub.Name = "MainHub"
-hub.Size = UDim2.new(0, 380, 0, 220)
-hub.Position = UDim2.new(0.5, -190, 0.5, -110)
-hub.BackgroundColor3 = Color3.fromRGB(25, 120, 185)
-hub.BorderSizePixel = 0
-hub.Parent = sg
-
--- Header
-local header = Instance.new("Frame")
-header.Name = "Header"
-header.Size = UDim2.new(1, 0, 0, 32)
-header.BackgroundColor3 = Color3.fromRGB(0, 220, 150)
-header.BorderSizePixel = 0
-header.Parent = hub
-
-local title = Instance.new("TextLabel")
-title.Text = "PERFORMANCE HUB (BETA v2)"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.TextColor3 = Color3.new(1,1,1)
-title.BackgroundTransparency = 1
-title.Size = UDim2.new(1, 0, 0, 32)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.Parent = header
-
--- Minimize Button
-local minimize = Instance.new("TextButton")
-minimize.Text = "-"
-minimize.Font = Enum.Font.GothamBold
-minimize.TextSize = 24
-minimize.Size = UDim2.new(0, 32, 0, 32)
-minimize.Position = UDim2.new(1, -64, 0, 0)
-minimize.BackgroundColor3 = Color3.fromRGB(18, 150, 180)
-minimize.TextColor3 = Color3.new(1,1,1)
-minimize.BorderSizePixel = 0
-minimize.Parent = header
-
--- Close Button
-local close = Instance.new("TextButton")
-close.Text = "*"
-close.Font = Enum.Font.GothamBold
-close.TextSize = 24
-close.Size = UDim2.new(0, 32, 0, 32)
-close.Position = UDim2.new(1, -32, 0, 0)
-close.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
-close.TextColor3 = Color3.new(1,1,1)
-close.BorderSizePixel = 0
-close.Parent = header
-
--- Key System UI
-local keyFrame = Instance.new("Frame")
-keyFrame.Name = "KeyFrame"
-keyFrame.Size = UDim2.new(1, 0, 1, -32)
-keyFrame.Position = UDim2.new(0, 0, 0, 32)
-keyFrame.BackgroundTransparency = 1
-keyFrame.Parent = hub
-
--- Enter Key (left)
-local enterKey = Instance.new("TextButton")
-enterKey.Text = "Enter Key"
-enterKey.Font = Enum.Font.GothamBold
-enterKey.TextSize = 16
-enterKey.Size = UDim2.new(0, 90, 0, 40)
-enterKey.Position = UDim2.new(0, 8, 0.2, 0)
-enterKey.BackgroundColor3 = Color3.fromRGB(40,210,180)
-enterKey.TextColor3 = Color3.new(1,1,1)
-enterKey.BorderSizePixel = 0
-enterKey.Parent = keyFrame
-
--- Key Box (center)
-local keyBox = Instance.new("TextBox")
-keyBox.PlaceholderText = "Enter Key"
-keyBox.Text = ""
-keyBox.Font = Enum.Font.Gotham
-keyBox.TextSize = 18
-keyBox.Size = UDim2.new(0, 140, 0, 40)
-keyBox.Position = UDim2.new(0, 106, 0.2, 0)
-keyBox.BackgroundColor3 = Color3.fromRGB(240,240,240)
-keyBox.TextColor3 = Color3.fromRGB(0,0,0)
-keyBox.BorderSizePixel = 0
-keyBox.Parent = keyFrame
-
--- Get Key (right)
-local getKey = Instance.new("TextButton")
-getKey.Text = "Get Key"
-getKey.Font = Enum.Font.GothamBold
-getKey.TextSize = 16
-getKey.Size = UDim2.new(0, 90, 0, 40)
-getKey.Position = UDim2.new(0, 256, 0.2, 0)
-getKey.BackgroundColor3 = Color3.fromRGB(40,120,210)
-getKey.TextColor3 = Color3.new(1,1,1)
-getKey.BorderSizePixel = 0
-getKey.Parent = keyFrame
-
--- Bottom Credit
-local credit = Instance.new("TextLabel")
-credit.Text = "By: Gonzales Official"
-credit.Font = Enum.Font.Gotham
-credit.TextSize = 14
-credit.TextColor3 = Color3.new(1,1,1)
-credit.BackgroundTransparency = 1
-credit.Size = UDim2.new(1, 0, 0, 20)
-credit.Position = UDim2.new(0, 0, 1, -20)
-credit.Parent = hub
-
--- Minimized tab (hidden by default)
-local minimized = Instance.new("TextButton")
-minimized.Name = "MinimizedTab"
-minimized.Text = ""
-minimized.Size = UDim2.new(0, 148, 0, 8)
-minimized.Position = UDim2.new(0.5, -74, 0, 0)
-minimized.BackgroundColor3 = Color3.fromRGB(0, 220, 150)
-minimized.BorderSizePixel = 0
-minimized.AutoButtonColor = false
-minimized.Visible = false
-minimized.Parent = sg
-
-local line = Instance.new("Frame")
-line.Size = UDim2.new(1, 0, 1, 0)
-line.BackgroundColor3 = Color3.fromRGB(25, 120, 185)
-line.BorderSizePixel = 0
-line.Parent = minimized
-
--- Minimize/Restore logic
-local function minimizeHub()
-    hub.Visible = false
-    minimized.Visible = true
-end
-local function restoreHub()
-    hub.Visible = true
-    minimized.Visible = false
-end
-
-minimize.MouseButton1Click:Connect(minimizeHub)
-minimized.MouseButton1Click:Connect(restoreHub)
-close.MouseButton1Click:Connect(function()
-    sg:Destroy()
+-- Rainbow border
+task.spawn(function()
+	while task.wait() do
+		for h = 0,255 do
+			keyStroke.Color = Color3.fromHSV(h/255,1,1)
+			task.wait(0.02)
+		end
+	end
 end)
 
-getKey.MouseButton1Click:Connect(function()
-    if syn and syn.open_url then
-        syn.open_url(DISCORD_LINK)
-    elseif Krnl and Krnl.Beta and Krnl.Beta.openUrl then
-        Krnl.Beta.openUrl(DISCORD_LINK)
-    elseif getrenv and getrenv().LaunchWebsite then
-        getrenv().LaunchWebsite(DISCORD_LINK)
-    elseif request and request({Url=DISCORD_LINK,Method="GET"}) then
-        -- Some rare executors support this, triggers browser open
-    else
-        setclipboard(DISCORD_LINK)
-        getKey.Text = "Copied!"
-        wait(1)
-        getKey.Text = "Get Key"
-    end
+-- Rainbow Label "Enter Key"
+local keyLabel = Instance.new("TextLabel", keyFrame)
+keyLabel.Size = UDim2.new(0.8,0,0.3,0)
+keyLabel.Position = UDim2.new(0.1,0,0.05,0)
+keyLabel.BackgroundTransparency = 1
+keyLabel.Text = "Enter Key"
+keyLabel.Font = Enum.Font.GothamBold
+keyLabel.TextSize = 12
+keyLabel.TextScaled = true
+keyLabel.TextXAlignment = Enum.TextXAlignment.Center
+keyLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+task.spawn(function()
+	while task.wait() do
+		for h = 0,255 do
+			keyLabel.TextColor3 = Color3.fromHSV(h/255,1,1)
+			task.wait(0.02)
+		end
+	end
 end)
 
--- Optimization functions for all devices
-local function antiLag()
-    pcall(function()
-        settings().Rendering.QualityLevel = "Level01"
-    end)
-    for _,v in pairs(game:GetDescendants()) do
-        if v:IsA("Decal") or v:IsA("Texture") then
-            v.Transparency = 1
-        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-            v.Enabled = false
-        elseif v:IsA("Explosion") then
-            v.Visible = false
-        end
-    end
-    if game.Lighting:FindFirstChildOfClass("BlurEffect") then
-        game.Lighting:FindFirstChildOfClass("BlurEffect").Enabled = false
-    end
-    if game.Lighting:FindFirstChildOfClass("SunRaysEffect") then
-        game.Lighting:FindFirstChildOfClass("SunRaysEffect").Enabled = false
-    end
-    game.Lighting.Brightness = 1
-end
+-- Key input box
+local keyBox = Instance.new("TextBox", keyFrame)
+keyBox.Size = UDim2.new(0.8,0,0.3,0)
+keyBox.Position = UDim2.new(0.1,0,0.45,0)
+keyBox.BackgroundColor3 = Color3.fromRGB(40,40,40)
+keyBox.TextColor3 = Color3.fromRGB(255,255,255)
+keyBox.Font = Enum.Font.GothamBold
+keyBox.TextSize = 12
+keyBox.TextScaled = true
+keyBox.TextXAlignment = Enum.TextXAlignment.Center
+keyBox.TextYAlignment = Enum.TextYAlignment.Center
+keyBox.ClearTextOnFocus = true
+Instance.new("UICorner", keyBox)
 
-local function antiOverheat()
-    if setfpscap then setfpscap(30) end
-    for _,v in pairs(game:GetDescendants()) do
-        if v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
-            v.Enabled = false
-        end
-    end
-    for _,v in pairs(game:GetDescendants()) do
-        if v:IsA("Sound") and v.Name:lower():find("ambient") then
-            v:Stop()
-        end
-    end
-end
+-- Unlock button
+local unlockBtn = Instance.new("TextButton", keyFrame)
+unlockBtn.Size = UDim2.new(0.8,0,0.2,0)
+unlockBtn.Position = UDim2.new(0.1,0,0.75,0)
+unlockBtn.Text = "Unlock"
+unlockBtn.Font = Enum.Font.GothamBold
+unlockBtn.TextSize = 12
+unlockBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+unlockBtn.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", unlockBtn)
 
-local function boostFPS()
-    game.Lighting.GlobalShadows = false
-    game.Lighting.FogEnd = 100000
-    for _,v in pairs(game:GetDescendants()) do
-        if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") then
-            v.Enabled = false
-        end
-    end
-    for _,v in pairs(game:GetDescendants()) do
-        if v:IsA("Texture") or v:IsA("Decal") then
-            v.Transparency = 1
-        end
-    end
-end
+--------------------------------------------------
+-- Second UI: Button HUD (Small, Hidden Initially)
+--------------------------------------------------
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 160, 0, 120)
+frame.Position = UDim2.new(0.02, 0, 0.02, 0)
+frame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+frame.Active = true
+frame.Draggable = true
+frame.Visible = false
 
-enterKey.MouseButton1Click:Connect(function()
-    if keyBox.Text == KEY then
-        keyFrame.Visible = false
+local corner = Instance.new("UICorner", frame)
+local stroke = Instance.new("UIStroke", frame)
+stroke.Thickness = 2
 
-        -- Small Movable Tab with bottom credit
-        local tab = Instance.new("Frame")
-        tab.Name = "MovableTab"
-        tab.Size = UDim2.new(0, 190, 0, 60)
-        tab.Position = UDim2.new(0, 30, 0, 80)
-        tab.BackgroundColor3 = Color3.fromRGB(0, 220, 150)
-        tab.BorderSizePixel = 0
-        tab.Parent = sg
-
-        makeDraggable(tab)
-
-        local tabHeader = Instance.new("Frame")
-        tabHeader.Size = UDim2.new(1, 0, 0, 12)
-        tabHeader.BackgroundColor3 = Color3.fromRGB(25, 120, 185)
-        tabHeader.BorderSizePixel = 0
-        tabHeader.Parent = tab
-
-        -- Button order: Anti-Lag, Anti-Overheat, Boost FPS
-        local buttonColors = {
-            Color3.fromRGB(60, 180, 220),
-            Color3.fromRGB(50, 210, 140),
-            Color3.fromRGB(70, 140, 210),
-        }
-        local buttonTexts = {"Anti-Lag", "Anti-Overheat", "Boost FPS"}
-        local buttonFuncs = {antiLag, antiOverheat, boostFPS}
-
-        for i=1,3 do
-            local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(0, 55, 0, 28)
-            btn.Position = UDim2.new(0, 10 + (i-1)*60, 0, 16)
-            btn.BackgroundColor3 = buttonColors[i]
-            btn.Text = buttonTexts[i]
-            btn.Font = Enum.Font.GothamBold
-            btn.TextSize = 14
-            btn.TextColor3 = Color3.new(1,1,1)
-            btn.BorderSizePixel = 0
-            btn.Parent = tab
-
-            btn.MouseButton1Click:Connect(function()
-                btn.Text = "Done!"
-                pcall(buttonFuncs[i])
-                wait(0.8)
-                btn.Text = buttonTexts[i]
-            end)
-        end
-
-        -- Bottom credit (always pinned to bottom)
-        local tabCredit = Instance.new("TextLabel")
-        tabCredit.Text = "By: Gonzales Official"
-        tabCredit.Font = Enum.Font.Gotham
-        tabCredit.TextSize = 13
-        tabCredit.TextColor3 = Color3.new(1,1,1)
-        tabCredit.BackgroundTransparency = 1
-        tabCredit.Size = UDim2.new(1, 0, 0, 15)
-        tabCredit.Position = UDim2.new(0, 0, 1, -15)
-        tabCredit.Parent = tab
-
-        hub.Visible = false
-        minimized.Visible = false
-    else
-        keyBox.Text = ""
-        keyBox.PlaceholderText = "Wrong Key!"
-    end
+-- Rainbow border
+task.spawn(function()
+	while task.wait() do
+		for h = 0, 255 do
+			stroke.Color = Color3.fromHSV(h/255,1,1)
+			task.wait(0.02)
+		end
+	end
 end)
 
-makeDraggable(hub)
+-- Boost Fps Button
+local boostBtn = Instance.new("TextButton", frame)
+boostBtn.Size = UDim2.new(0.8,0,0.15,0)
+boostBtn.Position = UDim2.new(0.1,0,0.1,0)
+boostBtn.Text = "Boost Fps"
+boostBtn.Font = Enum.Font.GothamBold
+boostBtn.TextSize = 12
+boostBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+boostBtn.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", boostBtn)
+
+-- Recommended For Mobile label
+local recLabel = Instance.new("TextLabel", frame)
+recLabel.Size = UDim2.new(0.8,0,0.1,0)
+recLabel.Position = UDim2.new(0.1,0,0.35,0)
+recLabel.BackgroundTransparency = 1
+recLabel.Text = "Recommended For Mobile"
+recLabel.Font = Enum.Font.Gotham
+recLabel.TextSize = 10
+recLabel.TextColor3 = Color3.fromRGB(200,200,200)
+recLabel.TextScaled = true
+recLabel.TextXAlignment = Enum.TextXAlignment.Center
+recLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Report Bug Button
+local reportBtn = Instance.new("TextButton", frame)
+reportBtn.Size = UDim2.new(0.8,0,0.15,0)
+reportBtn.Position = UDim2.new(0.1,0,0.55,0)
+reportBtn.Text = "Report Bug"
+reportBtn.Font = Enum.Font.GothamBold
+reportBtn.TextSize = 10
+reportBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+reportBtn.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", reportBtn)
+
+local discordLink = "https://discord.gg/v65zvUw2xk"
+reportBtn.MouseButton1Click:Connect(function()
+	pcall(function()
+		setclipboard(discordLink)
+		reportBtn.Text = "Copied!"
+		task.wait(2)
+		reportBtn.Text = "Report Bug"
+	end)
+end)
+
+-- Tiny Rainbow FPS Counter
+local fpsLabel = Instance.new("TextLabel", frame)
+fpsLabel.Size = UDim2.new(0,50,0,12)
+fpsLabel.Position = UDim2.new(0.5,-25,0.75,0)
+fpsLabel.BackgroundTransparency = 0.3
+fpsLabel.BackgroundColor3 = Color3.fromRGB(15,15,15)
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 10
+fpsLabel.Text = "FPS: 0"
+fpsLabel.TextXAlignment = Enum.TextXAlignment.Center
+fpsLabel.TextYAlignment = Enum.TextYAlignment.Center
+local fpsStroke = Instance.new("UIStroke", fpsLabel)
+fpsStroke.Thickness = 1
+
+-- Rainbow FPS
+task.spawn(function()
+	while task.wait(0.03) do
+		for h=0,255 do
+			local c = Color3.fromHSV(h/255,1,1)
+			fpsLabel.TextColor3 = c
+			fpsStroke.Color = c
+			task.wait(0.02)
+		end
+	end
+end)
+
+-- Real FPS calculation
+local last, frames, fps = tick(),0,0
+game:GetService("RunService").RenderStepped:Connect(function()
+	frames += 1
+	local now = tick()
+	if now - last >= 1 then
+		fps = frames / (now - last)
+		last, frames = now, 0
+		fpsLabel.Text = string.format("FPS: %.0f", fps)
+	end
+end)
+
+-- Boost FPS functionality
+boostBtn.MouseButton1Click:Connect(function()
+	boostBtn.Text = "Processing..."
+	task.wait(2)
+	for _,v in pairs(workspace:GetDescendants()) do
+		if v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
+	end
+	if workspace:FindFirstChild("Terrain") then
+		workspace.Terrain.WaterWaveSize = 0
+		workspace.Terrain.WaterWaveSpeed = 0
+		workspace.Terrain.WaterReflectance = 0
+		workspace.Terrain.WaterTransparency = 1
+		workspace.Terrain:SetMaterialColor(Enum.Material.Grass, Color3.new(0.5,0.5,0.5))
+	end
+	game.Lighting.GlobalShadows = false
+	game.Lighting.FogEnd = 1e6
+	game.Lighting.Brightness = 1
+	game.Lighting.OutdoorAmbient = Color3.fromRGB(255,255,255)
+	game.Lighting.Technology = Enum.Technology.Compatibility
+	for _,v in pairs(workspace:GetDescendants()) do
+		if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") then
+			v:Destroy()
+		end
+	end
+	boostBtn.Text = "✅ Boosted!"
+	task.wait(2)
+	boostBtn.Text = "Boost Fps"
+end)
+
+--------------------------------------------------
+-- Unlock Button Logic
+--------------------------------------------------
+unlockBtn.MouseButton1Click:Connect(function()
+	if keyBox.Text == "555" then
+		keyFrame:Destroy() -- remove key UI
+		frame.Visible = true -- show main HUD
+	else
+		unlockBtn.Text = "❌ Wrong Key"
+		task.wait(2)
+		unlockBtn.Text = "Unlock"
+	end
+end)
